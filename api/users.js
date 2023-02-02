@@ -1,24 +1,27 @@
+
 /* const express = require('express');
 const usersRouter = express.Router();
 const jwt = require('jsonwebtoken')
-const {getAllUsers} = require ('../db/index')
 
 usersRouter.use((req, res, next) => {
   console.log("A request is being made to /users");
 
-  //res.send({ message: 'hello from /users!' });
-  next();
+  next(); 
 });
 
+const { getAllUsers } = require('../db');
+const { getUserByUsername } = require('../db');
+const { createUser } = require('../db');
 
 usersRouter.get('/', async (req, res) => {
-    const users = await getAllUsers();
-    res.send({
-      users: []
-    });
-  });
+  const users = await getAllUsers();
 
-  usersRouter.post('/login', async (req, res, next) => {
+  res.send({
+    users
+  });
+});
+
+usersRouter.post('/login', async (req, res, next) => {
     const { username, password } = req.body;
   
     // request must have both
@@ -36,11 +39,11 @@ usersRouter.get('/', async (req, res) => {
         // create token & return to user
         const token = jwt.sign(
             {
-                id: user.id,
+                id: user.id, 
                 username
-            }, prcess.env.JWT_SECRET
+            }, process.env.JWT_SECRET
         )
-        res.send({ message: "you're logged in!" });
+        res.send({ message: "you're logged in!", "token": token });
       } else {
         next({ 
           name: 'IncorrectCredentialsError', 
@@ -51,8 +54,9 @@ usersRouter.get('/', async (req, res) => {
       console.log(error);
       next(error);
     }
-  });
-  usersRouter.post('/register', async (req, res, next) => {
+});
+
+usersRouter.post('/register', async (req, res, next) => {
     const { username, password, name, location } = req.body;
   
     try {
@@ -86,7 +90,7 @@ usersRouter.get('/', async (req, res) => {
     } catch ({ name, message }) {
       next({ name, message })
     } 
-  });
+});
 
 module.exports = usersRouter; */
 const express = require('express');
@@ -96,13 +100,14 @@ const jwt = require('jsonwebtoken')
 usersRouter.use((req, res, next) => {
   console.log("A request is being made to /users");
 
-  next(); 
+  next(); // THIS IS DIFFERENT
 });
 
 const { getAllUsers } = require('../db');
 const { getUserByUsername } = require('../db');
 const { createUser } = require('../db');
 
+// UPDATE
 usersRouter.get('/', async (req, res) => {
   const users = await getAllUsers();
 
